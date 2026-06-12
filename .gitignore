@@ -1,0 +1,3 @@
+*.tar
+zap-reports/
+__pycache__/
