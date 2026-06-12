@@ -16,6 +16,6 @@ spec:
         skopeo copy \
           --src-tls-verify=false \
           --src-creds="unused:${TOKEN}" \
-          --dest-creds="jbanday100+pipeline:LXWJBL35COJ0URH0WI34B5UR2ZNEZ2MHH5U2SNX9WL48SCYN43PH6B4TO7K0OVQX" \
+          --dest-creds="jbanday100+pipeline:YOUR-QUAY-TOKEN" \
           docker://image-registry.openshift-image-registry.svc:5000/jbanday100-dev/python-openshift-cicd:latest \
           docker://quay.io/jbanday100/python-openshift-cicd:latest
