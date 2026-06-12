@@ -1,0 +1,33 @@
+env:
+  contexts:
+  - excludePaths: []
+    name: baseline
+    urls:
+    - http://python-openshift-cicd-jbanday100-dev.apps.rm1.0a51.p1.openshiftapps.com
+  parameters:
+    failOnError: true
+    progressToStdout: false
+jobs:
+- parameters:
+    enableTags: false
+    maxAlertsPerRule: 10
+  type: passiveScan-config
+- parameters:
+    maxDuration: 1
+    url: http://python-openshift-cicd-jbanday100-dev.apps.rm1.0a51.p1.openshiftapps.com
+  type: spider
+- parameters:
+    maxDuration: 0
+  type: passiveScan-wait
+- parameters:
+    format: Long
+    summaryFile: /home/zap/zap_out.json
+  rules: []
+  type: outputSummary
+- parameters:
+    reportDescription: ''
+    reportDir: /zap/wrk/
+    reportFile: zap-report.html
+    reportTitle: ZAP Scanning Report
+    template: traditional-html
+  type: report
