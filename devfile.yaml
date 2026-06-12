@@ -1,0 +1,30 @@
+schemaVersion: 2.2.0
+
+metadata:
+  name: python-openshift-cicd
+  version: 1.0.0
+
+components:
+  - name: python-runtime
+    container:
+      image: registry.access.redhat.com/ubi9/python-311
+      memoryLimit: 1Gi
+      mountSources: true
+      command:
+        - tail
+      args:
+        - "-f"
+        - "/dev/null"
+
+commands:
+  - id: install-dependencies
+    exec:
+      component: python-runtime
+      commandLine: pip install -r requirements.txt
+      workingDir: ${PROJECT_SOURCE}
+
+  - id: run-app
+    exec:
+      component: python-runtime
+      commandLine: python app.py
+      workingDir: ${PROJECT_SOURCE}
