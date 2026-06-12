@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: bandit-sast
+spec:
+  workspaces:
+    - name: source
+  steps:
+    - name: bandit
+      image: python:3.11-slim
+      script: |
+        cd $(workspaces.source.path)
+        pip install bandit
+        bandit -r app || true

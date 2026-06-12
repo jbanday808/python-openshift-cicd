@@ -1,0 +1,102 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: python-openshift-cicd-pipeline
+  namespace: jbanday100-dev
+spec:
+  tasks:
+    - name: git-clone
+      params:
+        - name: URL
+          value: https://github.com/jbanday808/python-openshift-cicd.git
+        - name: REVISION
+          value: main
+        - name: DELETE_EXISTING
+          value: "true"
+      taskRef:
+        resolver: cluster
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: git-clone
+          - name: namespace
+            value: openshift-pipelines
+      workspaces:
+        - name: ssh-directory
+          workspace: ssh-directory
+        - name: output
+          workspace: shared-workspace
+
+    - name: pytest-test
+      runAfter:
+        - git-clone
+      taskRef:
+        kind: Task
+        name: pytest-test
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+
+    - name: bandit-sast
+      runAfter:
+        - pytest-test
+      taskRef:
+        kind: Task
+        name: bandit-sast
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+
+    - name: s2i-python
+      runAfter:
+        - bandit-sast
+      params:
+        - name: IMAGE
+          value: image-registry.openshift-image-registry.svc:5000/jbanday100-dev/python-openshift-cicd:latest
+        - name: VERSION
+          value: 3.9-ubi8
+        - name: CONTEXT
+          value: .
+        - name: STORAGE_DRIVER
+          value: vfs
+        - name: FORMAT
+          value: oci
+        - name: SKIP_PUSH
+          value: "false"
+        - name: TLS_VERIFY
+          value: "true"
+      taskRef:
+        resolver: cluster
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: s2i-python
+          - name: namespace
+            value: openshift-pipelines
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+
+    - name: trivy-scan
+      runAfter:
+        - s2i-python
+      taskRef:
+        kind: Task
+        name: trivy-scan
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+
+    - name: push-to-quay
+      runAfter:
+        - trivy-scan
+      taskRef:
+        kind: Task
+        name: push-to-quay
+
+  workspaces:
+    - name: shared-workspace
+    - name: ssh-directory
+      optional: true

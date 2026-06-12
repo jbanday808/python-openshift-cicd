@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: push-to-quay
+  namespace: jbanday100-dev
+spec:
+  steps:
+    - name: copy-image
+      image: quay.io/skopeo/stable:latest
+      script: |
+        #!/bin/sh
+        set -e
+
+        TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+
+        skopeo copy \
+          --src-tls-verify=false \
+          --src-creds="unused:${TOKEN}" \
+          --dest-creds="jbanday100+pipeline:LXWJBL35COJ0URH0WI34B5UR2ZNEZ2MHH5U2SNX9WL48SCYN43PH6B4TO7K0OVQX" \
+          docker://image-registry.openshift-image-registry.svc:5000/jbanday100-dev/python-openshift-cicd:latest \
+          docker://quay.io/jbanday100/python-openshift-cicd:latest

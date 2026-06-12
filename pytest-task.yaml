@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: pytest-test
+spec:
+  workspaces:
+    - name: source
+  steps:
+    - name: pytest
+      image: python:3.11-slim
+      script: |
+        cd $(workspaces.source.path)
+        pip install -r requirements.txt
+        PYTHONPATH=. pytest tests/test_app.py

@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: python-openshift-cicd-run-
+  namespace: jbanday100-dev
+spec:
+  pipelineRef:
+    name: python-openshift-cicd-pipeline
+
+  taskRunTemplate:
+    serviceAccountName: pipeline
+
+  workspaces:
+    - name: shared-workspace
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
