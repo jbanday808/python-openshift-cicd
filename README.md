@@ -953,12 +953,9 @@ https://kubernetes.io/docs
 
 James Banday
 
-GitHub:
+GitHub: https://github.com/jbanday808/python-openshift-cicd/edit/main
 
-https://github.com/jbanday808/python-openshift-cicd/edit/main
-
-LinkedIn:
-https://www.linkedin.com/in/james-allen-morta-banday-62a391128
+LinkedIn: https://www.linkedin.com/in/james-allen-morta-banday-62a391128
 
 
 ---
